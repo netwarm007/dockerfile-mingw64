@@ -85,3 +85,6 @@ RUN \
  && cd $BUILD \
  && rm -rf build-gcc gcc-6.3.0
 
+ENV PATH=${PATH}:${PREFIX}/bin
+
+CMD ["/bin/bash"]
