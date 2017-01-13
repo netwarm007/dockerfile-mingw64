@@ -1,8 +1,8 @@
 FROM ubuntu:latest
 MAINTAINER Chen, Wenli <chenwenli@chenwenli.com>
 
-WORKDIR /tmp/work
-ENV 	PRJROOT=/tmp/work/w64 \
+WORKDIR /opt
+ENV 	PRJROOT=/opt/cross/w64 \
 	TARGET=x86_64-w64-mingw32 
 ENV 	PREFIX=${PRJROOT}/tools \
 	BUILD=${PRJROOT}/build-tools 
@@ -29,7 +29,7 @@ RUN apt-get -qq update && apt-get install --no-install-recommends -qqy \
 RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz > binutils-2.27.tar.gz \
  && tar zxf binutils-2.27.tar.gz \
  && cd build-binutils \
- && ../binutils-2.27/configure --target=$TARGET --prefix=$PREFIX --with-sysroot=$PREFIX \
+ && ../binutils-2.27/configure --disable-multilib --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} \
  && make \
  && make install \ 
  && cd $BUILD \ 
@@ -40,13 +40,13 @@ RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz > binutils-2.27
 RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 | tar jxf - \
  && mkdir -p $BUILD/build-mingw-w64-header/ \
  && cd $BUILD/build-mingw-w64-header/ \
- && ../mingw-w64-v5.0.0/configure --host=${TARGET} --prefix=$TARGET_PREFIX --without-crt \
+ && ../mingw-w64-v5.0.0/configure --host=${TARGET} --prefix=${TARGET_PREFIX} --with-sysroot=${TARGET_PREFIX} --without-crt \
  && make \
  && make install \
  && cd $BUILD \
  && rm -rf build-mingw-w64-header
 
-# gcc
+# gcc phase 1
 RUN \
  curl -L http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.bz2 | tar jxf - \
  && ln -s $TARGET_PREFIX $PREFIX/mingw \
@@ -61,18 +61,17 @@ RUN \
 # mpfr
  && curl -L http://www.mpfr.org/mpfr-current/mpfr-3.1.5.tar.bz2 | tar jxf - \
  && mv mpfr-3.1.5 gcc-6.3.0/mpfr \
- && cd $BUILD/build-boot-gcc \
- && ../gcc-6.3.0/configure --target=$TARGET --prefix=$PREFIX --enable-languages=c,c++ \
+ && cd $BUILD/build-gcc \
+ && ../gcc-6.3.0/configure --disable-multilib --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} --enable-languages=c,c++ \
  && make all-gcc \
  && make install-gcc \
- && cd $BUILD \
- && rm -rf build-boot-gcc
+ && cd $BUILD 
 
-# mingw header
+# mingw crt
 RUN \
  mkdir -p $BUILD/build-mingw-w64-crt/ \
  && cd $BUILD/build-mingw-w64-crt/ \
- && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-header --with-sysroot=$TARGET_PREFIX \
+ && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-header --with-sysroot=${TARGET_PREFIX} \
  && make \
  && make install \
  && cd $BUILD \
@@ -81,7 +80,6 @@ RUN \
 # other gcc libraries
 RUN \
  cd $BUILD/build-gcc \
- && ../gcc-6.3.0/configure --target=$TARGET --prefix=$PREFIX --enable-languages=c,c++ \
  && make all \
  && make install \
  && cd $BUILD \
