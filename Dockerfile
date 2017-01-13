@@ -83,7 +83,8 @@ RUN \
  && make all \
  && make install \
  && cd $BUILD \
- && rm -rf build-gcc gcc-6.3.0
+ && rm -rf build-gcc gcc-6.3.0 \
+ && cd / && rm -rf /tmp/work
 
 ENV PATH=${PATH}:${PREFIX}/bin
 
