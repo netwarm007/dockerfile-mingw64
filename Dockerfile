@@ -41,7 +41,7 @@ RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w
  && rm mingw-w64-v5.0.0.tar.bz2 \
  && mkdir -p $BUILD/build-mingw-w64-header/ \
  && cd $BUILD/build-mingw-w64-header/ \
- && ../mingw-w64-v5.0.0/configure --prefix=$TARGET_PREFIX --without-crt \
+ && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-crt --with-sysroot=$TARGET_PREFIX \
  && make \
  && make install \
  && cd $BUILD \
@@ -70,7 +70,8 @@ RUN \
  && rm -rf build-boot-gcc
 
 RUN \
- cd $BUILD/build-mingw-w64-crt \
+ mkdir -p $BUILD/build-mingw-w64-crt/ \
+ && cd $BUILD/build-mingw-w64-crt \
  && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-header --with-sysroot=$TARGET_PREFIX \
  && make \
  && make install \
