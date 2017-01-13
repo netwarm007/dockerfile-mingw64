@@ -36,12 +36,10 @@ RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz > binutils-2.27
 
 # mingw headers
 
-RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 > mingw-w64-v5.0.0.tar.bz2 \
- && tar jxf mingw-w64-v5.0.0.tar.bz2 \
- && rm mingw-w64-v5.0.0.tar.bz2 \
+RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 | tar jxf - \
  && mkdir -p $BUILD/build-mingw-w64-header/ \
  && cd $BUILD/build-mingw-w64-header/ \
- && ../mingw-w64-v5.0.0/configure --prefix=$TARGET_PREFIX --without-crt \
+ && ../mingw-w64-v5.0.0/configure --host=${TARGET} --prefix=$TARGET_PREFIX --without-crt \
  && make \
  && make install \
  && cd $BUILD \
@@ -69,19 +67,24 @@ RUN \
  && cd $BUILD \
  && rm -rf build-boot-gcc
 
+# mingw header
 RUN \
- cd $BUILD/build-mingw-w64-crt \
+ mkdir -p $BUILD/build-mingw-w64-crt/ \
+ && cd $BUILD/build-mingw-w64-crt/ \
  && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-header --with-sysroot=$TARGET_PREFIX \
  && make \
  && make install \
  && cd $BUILD \
  && rm -rf build-mingw-w64-crt mingw-w64-v5.0.0
 
+# other gcc libraries
 RUN \
  cd $BUILD/build-gcc \
  && ../gcc-6.3.0/configure --target=$TARGET --prefix=$PREFIX --enable-languages=c,c++ \
  && make all \
  && make install \
  && cd $BUILD \
- && rm -rf build-gcc gcc-6.3.0
+ && rm -rf build-gcc gcc-6.3.0 
+
+CMD ["/bin/bash"]
 
