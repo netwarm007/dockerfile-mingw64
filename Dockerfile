@@ -8,6 +8,7 @@ ENV 	PREFIX=${PRJROOT}/tools \
 	BUILD=${PRJROOT}/build-tools 
 ENV 	TARGET_PREFIX=${PREFIX}/${TARGET}
 ENV	MAKEOPTS="-j4 --quiet"
+ENV 	PATH=${PATH}:${PREFIX}/bin
 
 COPY createdir.sh .
 
@@ -87,4 +88,3 @@ RUN \
  && rm -rf build-gcc gcc-6.3.0 
 
 CMD ["/bin/bash"]
-
