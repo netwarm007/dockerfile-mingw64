@@ -66,3 +66,22 @@ RUN \
  && ../gcc-6.3.0/configure --target=$TARGET --prefix=$PREFIX --enable-languages=c,c++ \
  && make all-gcc \
  && make install-gcc \
+ && cd $BUILD \
+ && rm -rf build-boot-gcc
+
+RUN \
+ cd $BUILD/build-mingw-w64-crt \
+ && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-header --with-sysroot=$TARGET_PREFIX \
+ && make \
+ && make install \
+ && cd $BUILD \
+ && rm -rf build-mingw-w64-crt mingw-w64-v5.0.0
+
+RUN \
+ cd $BUILD/build-gcc \
+ && ../gcc-6.3.0/configure --target=$TARGET --prefix=$PREFIX --enable-languages=c,c++ \
+ && make all \
+ && make install \
+ && cd $BUILD \
+ && rm -rf build-gcc gcc-6.3.0
+
