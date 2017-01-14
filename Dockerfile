@@ -26,8 +26,10 @@ RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz | tar zxf - \
- && cd $BUILD/build-binutils \
+RUN \
+ && cd $BUILD \
+ && curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz | tar zxf - \
+ && cd build-binutils \
  && ../binutils-2.27/configure --disable-multilib --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} \
  && make \
  && make install \ 
