@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 MAINTAINER Chen, Wenli <chenwenli@chenwenli.com>
 
-WORKDIR /opt
+WORKDIR /opt/cross
 ENV 	PRJROOT=/opt/cross/w64 \
 	TARGET=x86_64-w64-mingw32 
 ENV 	PREFIX=${PRJROOT}/tools \
@@ -34,9 +34,10 @@ RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz | tar zxf - \
  && make \
  && make install \ 
  && cd $BUILD \ 
- && rm -rf build-binutils binutils-2.27 binutils-2.27.tar.gz \
+ && rm -rf build-binutils binutils-2.27 
+
 # mingw headers
- && curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 | tar jxf - \
+RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 | tar jxf - \
  && mkdir -p $BUILD/build-mingw-w64-header/ \
  && cd $BUILD/build-mingw-w64-header/ \
  && ../mingw-w64-v5.0.0/configure --host=${TARGET} --prefix=${TARGET_PREFIX} --with-sysroot=${TARGET_PREFIX} --without-crt \
@@ -70,7 +71,7 @@ RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz | tar zxf - \
  && make install \
  && cd $BUILD \
  && rm -rf build-mingw-w64-crt mingw-w64-v5.0.0 \
-# other gcc libraries
+# gcc phase 2
  && cd $BUILD/build-gcc \
  && make all \
  && make install \
