@@ -17,7 +17,7 @@ RUN \
 
 WORKDIR $BUILD
 
-ARG BUILD_TOOLS =  "build-essential \
+ENV BUILD_TOOLS="build-essential \
         ca-certificates \
         curl \
         tar \
