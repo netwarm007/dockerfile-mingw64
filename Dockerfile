@@ -7,7 +7,7 @@ ENV 	PRJROOT=/opt/cross/w64 \
 ENV 	PREFIX=${PRJROOT}/tools \
 	BUILD=${PRJROOT}/build-tools 
 ENV 	TARGET_PREFIX=${PREFIX}/${TARGET}
-ENV	MAKEOPTS="-j4 --quiet"
+ENV	MAKEOPTS="-j4 -s"
 ENV 	PATH=${PATH}:${PREFIX}/bin
 
 COPY createdir.sh .
@@ -24,7 +24,7 @@ ENV BUILD_TOOLS="build-essential \
         gzip \
         lzip"
 
-RUN apt-get -qq update && apt-get install --no-install-recommends -qqy \
+RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
 	$BUILD_TOOLS \
  && rm -rf /var/lib/apt/lists/*
 
