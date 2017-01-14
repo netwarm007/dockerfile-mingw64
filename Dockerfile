@@ -1,7 +1,6 @@
 FROM ubuntu:latest
 MAINTAINER Chen, Wenli <chenwenli@chenwenli.com>
 
-WORKDIR /opt/cross
 ENV 	PRJROOT=/opt/cross/w64 \
 	TARGET=x86_64-w64-mingw32 
 ENV 	PREFIX=${PRJROOT}/tools \
@@ -15,8 +14,6 @@ COPY createdir.sh .
 RUN \
 	/bin/bash createdir.sh && rm createdir.sh
 
-WORKDIR $BUILD
-
 ENV BUILD_TOOLS="build-essential \
         ca-certificates \
         curl \
@@ -26,10 +23,11 @@ ENV BUILD_TOOLS="build-essential \
 
 RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
 	$BUILD_TOOLS \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz | tar zxf - \
- && cd build-binutils \
+ && cd $BUILD/build-binutils \
  && ../binutils-2.27/configure --disable-multilib --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} \
  && make \
  && make install \ 
