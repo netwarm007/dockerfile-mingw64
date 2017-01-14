@@ -17,12 +17,12 @@ RUN \
 
 WORKDIR $BUILD
 
-ARG BUILD_TOOLS =  build-essential \
+ARG BUILD_TOOLS =  "build-essential \
         ca-certificates \
         curl \
         tar \
         gzip \
-        lzip
+        lzip"
 
 RUN apt-get -qq update && apt-get install --no-install-recommends -qqy \
 	$BUILD_TOOLS \
