@@ -24,20 +24,17 @@ ENV BUILD_TOOLS="build-essential \
 RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
 	$BUILD_TOOLS \
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
-RUN \
- cd $BUILD \
+ && rm -rf /var/lib/apt/lists/* \
+ && cd $BUILD \
  && curl -L http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz | tar zxf - \
  && cd build-binutils \
  && ../binutils-2.27/configure --disable-multilib --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} \
  && make \
  && make install \ 
  && cd $BUILD \ 
- && rm -rf build-binutils binutils-2.27 
-
+ && rm -rf build-binutils binutils-2.27 \
 # mingw headers
-RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 | tar jxf - \
+ && curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v5.0.0.tar.bz2 | tar jxf - \
  && mkdir -p $BUILD/build-mingw-w64-header/ \
  && cd $BUILD/build-mingw-w64-header/ \
  && ../mingw-w64-v5.0.0/configure --host=${TARGET} --prefix=${TARGET_PREFIX} --with-sysroot=${TARGET_PREFIX} --without-crt \
@@ -76,6 +73,8 @@ RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w
  && make all \
  && make install \
  && cd $BUILD \
- && rm -rf build-gcc gcc-6.3.0 
+ && rm -rf build-gcc gcc-6.3.0 \
+# clean up
+ && apt-get -yqq purge $BUILD_TOOLS
 
 CMD ["/bin/bash"]
