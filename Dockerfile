@@ -64,7 +64,7 @@ RUN curl -L http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w
  && make all-gcc \
  && make install-gcc \
 # mingw CRT
- mkdir -p $BUILD/build-mingw-w64-crt/ \
+ && mkdir -p $BUILD/build-mingw-w64-crt/ \
  && cd $BUILD/build-mingw-w64-crt/ \
  && ../mingw-w64-v5.0.0/configure --host=$TARGET --prefix=$TARGET_PREFIX --without-header --with-sysroot=${TARGET_PREFIX} \
  && make \
