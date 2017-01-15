@@ -73,8 +73,6 @@ RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
  && make all \
  && make install \
  && cd $BUILD \
- && rm -rf build-gcc gcc-6.3.0 \
-# clean up
- && apt-get -yqq purge $BUILD_TOOLS
+ && rm -rf build-gcc gcc-6.3.0 
 
 CMD ["/bin/bash"]
