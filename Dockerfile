@@ -74,5 +74,4 @@ RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
 RUN adduser -q docker
 USER docker
 
-ENTRYPOINT ["x86_64-win64-mingw32-gcc"]
-CMD ["-v"]
+CMD ["/bin/bash"]
