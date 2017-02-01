@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM tim03/gcc
 MAINTAINER Chen, Wenli <chenwenli@chenwenli.com>
 
 ENV 	PRJROOT=/opt/cross/w64 \
@@ -14,15 +14,11 @@ COPY createdir.sh .
 RUN \
 	/bin/bash createdir.sh && rm createdir.sh
 
-ENV BUILD_TOOLS="build-essential \
-        ca-certificates \
-        curl \
-        tar \
-        gzip \
-        lzip"
+ENV BUILD_TOOLS="lzip"
 
 RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
 	$BUILD_TOOLS \
+ && apt-get -y autoremove \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
  && cd $BUILD \
