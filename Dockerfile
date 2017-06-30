@@ -53,7 +53,7 @@ RUN apt-get -qq update && apt-get -qqy install --no-install-recommends \
  && curl -L http://www.mpfr.org/mpfr-current/mpfr-3.1.5.tar.bz2 | tar jxf - \
  && mv mpfr-3.1.5 gcc-6.3.0/mpfr \
  && cd $BUILD/build-gcc \
- && ../gcc-6.3.0/configure --disable-multilib --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} --enable-languages=c,c++ \
+ && ../gcc-6.3.0/configure --disable-multilib --disable-bootstrap --target=$TARGET --prefix=$PREFIX --with-sysroot=${PREFIX} --enable-languages=c,c++ \
  && make all-gcc \
  && make install-gcc \
 # mingw CRT
